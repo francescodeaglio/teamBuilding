@@ -5,6 +5,8 @@ import plotly.express as px
 import pandas as pd
 from plotly.subplots import make_subplots
 
+from counters import counters_persona, counter_stand
+
 client = pymongo.MongoClient(
         "mongodb+srv://campoestivo:qVx8khSNIljjfKqw@cluster0.usbb0.mongodb.net/campoestivo?retryWrites=true&w=majority")
 db = client.testOpening
@@ -58,10 +60,22 @@ def pie_faseperfase(iscritti_db, coppie_db, quartetti_db, ottetti_db):
     st.plotly_chart(fig)
 
 
+
+
 def __main__():
-    st.title("Management page")
+
+    c1, c2 = st.columns((0.865,0.135))
+    c1.markdown("## Management page")
+    c2.text("\n")
+    if c2.button("Aggiorna"):
+        st.experimental_rerun()
     with st.expander("Conteggio fase per fase"):
         pie_faseperfase(iscritti_db, coppie_db, quartetti_db, ottetti_db)
+    st.markdown("### Prima Fase")
+    with st.expander("Progressi fase 1 - Individui"):
+        counters_persona(fase = 1)
+    with st.expander("Progressi fase 1 - Stand"):
+        counter_stand()
 
 if __name__ == "__main__":
     __main__()
