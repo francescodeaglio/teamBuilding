@@ -60,6 +60,106 @@ def pie_faseperfase(iscritti_db, coppie_db, quartetti_db, ottetti_db):
     st.plotly_chart(fig)
 
 
+def attivi_terza_fase(quartetti_db):
+    attivi = list(quartetti_db.find({}))
+    elenco = {squadra: [] for squadra in "12345"}
+    for membro in attivi:
+        s = f'Quartetto **{membro["nomi"]}**'
+        if "altri" not in membro:
+            s += " non è ancora stato definito l'altro quartetto"
+        else:
+            if membro["altri"]["tipo"] == "quartetto":
+                s += f' stanno cercando **{membro["altri"]["nomi_quartetto"]}**'
+            else:
+                s += f' per ora stanno cercando **{membro["altri"]["nomi_coppia"]}**'
+        elenco[str(int(membro["squadra"]))].append(s)
+
+    for squadra in sorted(list(elenco.keys())):
+        st.write("#### Squadra: " + squadra)
+        if len(elenco[squadra]) == 0:
+            st.write("Nessun quartetto attivo")
+        else:
+            st.markdown("\n\n".join(elenco[squadra]))
+
+
+def attivi_quarta_fase(ottetti_db):
+    attivi = list(ottetti_db.find({}))
+    elenco = {squadra: [] for squadra in "12345"}
+    for membro in attivi:
+        s = f'Ottetto **{membro["nomi"]}**'
+        elenco[str(int(membro["squadra"]))].append(s)
+
+    for squadra in sorted(list(elenco.keys())):
+        st.write("#### Squadra: " + squadra)
+        if len(elenco[squadra]) == 0:
+            st.write("Nessun ottetto completato")
+        else:
+            st.markdown("\n".join(elenco[squadra]))
+
+
+def ricerca(iscritti_db, coppie_db, quartetti_db, ottetti_db):
+    nome = st.selectbox("Seleziona il nome", get_all_names(iscritti_db).keys())
+
+    info = iscritti_db.find_one({"nomecognome": nome})
+    title = nome + f' (Squadra : {int(info["squadra"])}, Id : {int(info["Id"])})'
+    st.write("#### "+ title)
+
+    strings = []
+
+    # prima fase
+    string = f'**Fase 1**: {nome} {"è attivo" if info["attivo"] == True else "non è attivo"}\n\n'
+    stands = [x for x in info["stand_visitati"] if info["stand_visitati"][x] == True]
+    string += f'Ha completato {"gli stand " + "-".join(stands) if len(stands) > 0 else "nessuno stand"} e deve cercare {info["coppia"]["nomecognome"]} (id = {int(info["coppia"]["Id"])})'
+    strings.append(string)
+    # seconda fase
+    info = coppie_db.find_one({"nomicognomi": nome})
+    if info is None:
+        string = f'**Fase 2**: {nome} non è attivo'
+    else:
+        string = f'**Fase 2**: {nome} {"è attivo" if info["attivo"] == True else "non è attivo"}'
+        if info["awaiting"] == True and info["attivo"] == True:
+            string += "\n\nAl momento sta aspettando una coppia disponibile della sua squadra"
+    strings.append(string)
+    # terza fase
+    info = quartetti_db.find_one({"membri": nome})
+    if info is None:
+        string = f'**Fase 3**: {nome} non è attivo'
+    else:
+        string = f'**Fase 3**: {nome} {"è attivo" if info["attivo"] == True else "non è attivo"}\n\n'
+        string += f'Fa parte del quartetto *{info["nomi"]}* i cui id sono rispettivamente {info["ids"]}\n\n'
+        if "altri" not in info:
+            string += "Non è ancora stato definito l'altro quartetto"
+        else:
+            if info["altri"]["tipo"] == "quartetto":
+                string += f'Stanno cercando *{info["altri"]["nomi_quartetto"]}* i cui id sono rispettivamente {info["altri"]["ids"]}'
+            else:
+                string += f' per ora stanno cercando *{info["altri"]["nomi_coppia"]}* i cui id sono rispettivamente {info["altri"]["ids"]}'
+    strings.append(string)
+    # quarta fase
+    info = ottetti_db.find_one({"nomicognomi": nome})
+    if info is None:
+        string = f'**Fase 4**: {nome} non è attivo'
+    else:
+        string = f'**Fase 4**: {nome} {"è attivo" if info["attivo"] == True else "non è attivo"}\n\n'
+        string += f'Fa parte dell ottetto *{info["nomi"]}*'
+    strings.append(string)
+    out = "\n\n".join(strings)
+    st.markdown(out)
+
+def get_all_names(partecipants):
+    """
+    Function to get the names of all partecipants (used in the search bar)
+    :param partecipants: mongodb instance
+    :return: dict of tuples key = first last, value = (my_id, other's id)
+    """
+    res = list(partecipants.find({}))
+    ret = {}
+    for el in res:
+        first = el["Nome"]
+        last = el["Cognome"]
+        if "coppia" in el:
+            ret[f"{el['nomecognome']}"] = (int(el["Id"]), int(el["coppia"]["Id"]))
+    return ret
 
 
 def __main__():
@@ -71,11 +171,28 @@ def __main__():
         st.experimental_rerun()
     with st.expander("Conteggio fase per fase"):
         pie_faseperfase(iscritti_db, coppie_db, quartetti_db, ottetti_db)
+    with st.expander("Ricerca partecipante"):
+        ricerca(iscritti_db, coppie_db, quartetti_db, ottetti_db)
     st.markdown("### Prima Fase")
-    with st.expander("Progressi fase 1 - Individui"):
+    with st.expander("Progressi Individui"):
         counters_persona(fase = 1)
-    with st.expander("Progressi fase 1 - Stand"):
+    with st.expander("Progressi Stand"):
         counter_stand()
+    st.markdown("### Seconda fase")
+    with st.expander("Awaiting"):
+        st.code("Awaiting = persone che han completato uno stand e stanno aspettando l'altra coppia della propria squadra")
+        awaiting = list(coppie_db.find({"awaiting": True, "attivo": True}))
+        st.write(
+            "\n".join([f'Squadra {int(x["squadra"])} : {x["nomi"]}' for x in awaiting])
+        )
+    st.markdown("### Terza fase")
+    with st.expander("Attivi"):
+        st.error("TODO: aggiungere filtro attivi nella query. Tolto per debug")
+        attivi_terza_fase(quartetti_db)
+    st.markdown("### Quarta fase")
+    with st.expander("Attivi"):
+        attivi_quarta_fase(ottetti_db)
+
 
 if __name__ == "__main__":
     __main__()
