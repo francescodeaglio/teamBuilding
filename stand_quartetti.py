@@ -3,7 +3,7 @@ from utils import *
 
 def frontend_quartetti(stand, singoli_db, coppie_db, quartetti_db):
     stand_letter = stand.split("-")[0].strip()
-    st.code(f"Descrizione stand:\n {get_descrizione_quartetti()[stand_letter]}")
+    st.markdown(f"###### Descrizione stand\n\n {get_descrizione_quartetti()[stand_letter]}")
 
     with st.form("Ricerca stand - quartetti"):
 

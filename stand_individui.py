@@ -4,7 +4,7 @@ import pymongo
 
 def frontend_individui(stand, individui_db):
     stand_letter = stand.split("-")[0].strip()
-    st.code(f"Descrizione stand:\n {get_descrizione_individui()[stand_letter]}")
+    st.markdown(f"###### Descrizione stand\n\n {get_descrizione_individui()[stand_letter]}")
 
     with st.form("Ricerca stand"):
 
