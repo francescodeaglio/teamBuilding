@@ -10,8 +10,9 @@ st.write("# Descrizione\n\n"
          "Nel **secondo** expander trovate ciò che serve per la _prima fase_ (ovvero quando i giocatori partecipano da soli). E' presente una breve descrizione dello stand (p.s. se a voce vi diciamo qualcosa di diverso, vale quanto detto a voce) e un"
          " box per cercare il giocatore."
          "\n\nOgni stand funziona allo stesso modo: si fa quanto descritto nello stand, se viene superata la prova cercate il cognome di chi ha superato lo stand. "
-         "Vi viene fornito un numero, consegnate il foglio con quel numero."
-         "\n\n**Esempio:**"
+         "Vi viene fornito un numero, consegnate il foglio con quel numero.")
+st.warning("ATTENZIONE: cercate il nome solo dopo che ha superato lo stand.")
+st.write("\n\n**Esempio:**"
          "\n\nStand **I**, Stefano Terenzi supera la prova")
 st.image("media/Pre.png")
 st.write("Una volta premuto vi appare una scritta del genere")
