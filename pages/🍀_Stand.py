@@ -26,4 +26,3 @@ else:
 
     with st.expander("Terza fase: da quartetti a ottetti"):
         frontend_quartetti(stand, mongo_handler.singles_db, mongo_handler.couples_db, mongo_handler.quartets_db)
-

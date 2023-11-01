@@ -19,5 +19,3 @@ with st.expander("Forma quartetto"):
     oracle2to4.show_page()
 with st.expander("Forma ottetto"):
     oracle4to8.show_page()
-
-

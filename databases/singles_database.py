@@ -11,7 +11,6 @@ class SinglesDB(AbstractDatabase):
         """
         Function to store the completion of a stand by a given player
         :param my_id: id of the player that has completed the game
-        :param others_id: id of the other player in the couple
         :param stand: stand letter (A, B...)
         """
         player = list(self.db.find({"Id": my_id}))[0]
@@ -21,3 +20,17 @@ class SinglesDB(AbstractDatabase):
         else:
             self.db.update_one(player, {"$set": {"stand_visitati." + stand: True}})
             return True
+
+    def get_all_names(self):
+        """
+        Function to get the names of all partecipants (used in the search bar)
+        :return: dict of tuples key = first last, value = (my_id, other's id)
+        """
+        partecipants = list(self.db.find({}))
+        targets = {}
+        for partecipant in partecipants:
+            first = partecipant["Nome"]
+            last = partecipant["Cognome"]
+            if "coppia" in partecipants:
+                targets[f"{first} {last}"] = (int(partecipant["Id"]), int(partecipant["coppia"]["Id"]))
+        return targets
