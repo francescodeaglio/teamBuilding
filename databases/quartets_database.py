@@ -95,6 +95,8 @@ class QuartetsDB(AbstractDatabase):
             {"$set": {"available": False}}
         )
 
+    def find_names(self, names):
+        return self.db.find({"nomi":names})
 
 
 def check_precoupling(members):

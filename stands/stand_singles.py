@@ -23,10 +23,10 @@ class StandSingles:
                 partecipants = st.session_state["cached_ids"]
 
             partecipant = st.selectbox("Cerca il partecipante", partecipants)
-            my_id, other_id = partecipants[partecipant]
 
             submitted = st.form_submit_button("Cerca")
             if submitted:
+                my_id, other_id = partecipants[partecipant]
                 success = self.singles_db.update_stand_status(my_id, self.stand_letter)
                 if success:
                     st.success("Consegna la busta numero " + str(other_id))

@@ -23,16 +23,16 @@ class StandQuartets:
             names = st.selectbox("Cerca il quartetto", quartets)
             submitted = st.form_submit_button("Cerca")
             if submitted:
-                self.stand_status_update_4(names)
+                self.stand_status_update(names)
 
-    def stand_status_update_4(self, names):
-            players = quartetti.find({"nomi": nomi})[0]
+    def stand_status_update(self, names):
+            players = self.quartets_db.find_names(names)[0]
 
             # check if this players have already another matched quartet
             if "altri" in players:
-                return self._handle_quartet_with_existing_peer(players, names)
+                return self._handle_quartet_with_existing_peer(players)
             else:
-                return self._handle_quartet_without_existing_peer(players)
+                return self._handle_quartet_without_existing_peer(players, names)
 
     def _handle_quartet_without_existing_peer(self, players, names):
         # altrimenti dobbiamo assegnarlo
@@ -113,7 +113,7 @@ class StandQuartets:
 
     def find_suitable(self, peer_ids):
         for id in peer_ids:
-            partecipant = self.singles_db.search(id)[0]
+            partecipant = self.singles_db.search(int(id))[0]
             if not partecipant["stand_visitati"][self.stand_letter]:
                 self.singles_db.stand_status_update(partecipant,  self.stand_letter)
                 return id
