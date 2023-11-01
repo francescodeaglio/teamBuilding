@@ -1,5 +1,5 @@
-from Databases.OctetsDB import OctectsDB
-from Databases.QuartetsDB import QuartetsDB
+from databases.octets__database import OctectsDB
+from databases.quartets_database import QuartetsDB
 from utils import languages
 import streamlit as st
 

@@ -3,7 +3,7 @@ import pymongo
 
 import pymongo
 import certifi
-from Databases import AdminDB, SinglesDB, CouplesDB, OctectsDB, QuartetsDB
+from databases import AdminDB, SinglesDB, CouplesDB, OctectsDB, QuartetsDB
 
 
 class MongoHandler():

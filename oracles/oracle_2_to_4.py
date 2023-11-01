@@ -1,4 +1,4 @@
-from Databases.CouplesDB import CouplesDB
+from databases.couples_database import CouplesDB
 from utils import languages
 import streamlit as st
 

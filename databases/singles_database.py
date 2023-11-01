@@ -1,4 +1,4 @@
-from Databases.AbstractDatabase import AbstractDatabase
+from databases.abstract_database import AbstractDatabase
 
 
 class SinglesDB(AbstractDatabase):

@@ -1,6 +1,6 @@
 import streamlit as st
 
-from Databases import SinglesDB, CouplesDB
+from databases import SinglesDB, CouplesDB
 from utils import languages
 
 

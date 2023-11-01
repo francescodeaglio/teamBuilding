@@ -1,7 +1,7 @@
 import streamlit as st
 
-from Databases.MongoHandler import MongoHandler
-from Oracles import Oracle1to2, Oracle2to4, Oracle4to8
+from databases.mongo_handler import MongoHandler
+from oracles import Oracle1to2, Oracle2to4, Oracle4to8
 
 st.markdown(
         """
