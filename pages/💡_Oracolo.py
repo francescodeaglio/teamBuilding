@@ -1,6 +1,7 @@
 import streamlit as st
 import pymongo
-from oracolo1to2 import frontend_oracolo1to2
+
+from Oracle1to2 import Oracle1to2
 from oracolo2to4 import frontend_oracolo2to4
 from oracolo4to8 import frontend_oracolo4to8
 
@@ -25,8 +26,11 @@ quartetti_db = db["quartetti"]
 ottetti_db = db["otteti"]
 gestionale_db = db["gestionale"]
 
+
+oracle1to2 = Oracle1to2(singoli_db, coppie_db)
+
 with st.expander("Forma coppia"):
-    frontend_oracolo1to2(singoli_db, coppie_db)
+    oracle1to2.show_page()
 with st.expander("Forma quartetto"):
     frontend_oracolo2to4(coppie_db, quartetti_db, gestionale_db)
 

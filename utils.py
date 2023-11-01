@@ -1,3 +1,9 @@
+
+from enum import Enum
+
+languages = Enum("languages", ["ITALIAN", "ENGLISH"])
+
+
 def get_stands():
     stands = {
         "A": "Colore preferito",
