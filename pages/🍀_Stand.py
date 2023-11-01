@@ -1,20 +1,10 @@
-import streamlit as st
-
+from databases.mongo_handler import MongoHandler
 from stand_quartetti import frontend_quartetti
-from utils import *
-from stand_individui import *
-import pymongo
+from stands.stand_singles import StandSingles
+import streamlit as st
+from utils import get_labels_stands, set_xtra_large_size
 
-st.markdown(
-        """
-    <style>
-    .streamlit-expanderHeader {
-        font-size: x-large;
-    }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
+set_xtra_large_size()
 
 if "selected_stand" not in st.session_state:
     st.write("### Selezionare lo stand")
@@ -22,13 +12,7 @@ if "selected_stand" not in st.session_state:
     if st.button("Conferma"):
         st.experimental_rerun()
 else:
-    client = pymongo.MongoClient(
-        "mongodb+srv://campoestivo:qVx8khSNIljjfKqw@cluster0.usbb0.mongodb.net/campoestivo?retryWrites=true&w=majority")
-    db = client.testOpening
-    singoli_db = db["iscritti"]
-    coppie_db = db["coppie"]
-    quartetti_db = db["quartetti"]
-    ottetti_db = db["ottetti"]
+    mongo_handler = MongoHandler()
 
     stand = st.session_state["selected_stand"]
     st.title(f"Stand: {stand}")
@@ -38,8 +22,8 @@ else:
             st.experimental_rerun()
 
     with st.expander("Prima fase: da singoli a coppie"):
-        frontend_individui(stand, singoli_db)
+        StandSingles(stand, mongo_handler.singles_db).show_page()
 
     with st.expander("Terza fase: da quartetti a ottetti"):
-        frontend_quartetti(stand, singoli_db, coppie_db, quartetti_db)
+        frontend_quartetti(stand, mongo_handler.singles_db, mongo_handler.couples_db, mongo_handler.quartets_db)
 

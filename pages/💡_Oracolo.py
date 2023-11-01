@@ -2,17 +2,9 @@ import streamlit as st
 
 from databases.mongo_handler import MongoHandler
 from oracles import Oracle1to2, Oracle2to4, Oracle4to8
+from utils import set_xtra_large_size
 
-st.markdown(
-        """
-    <style>
-    .streamlit-expanderHeader {
-        font-size: x-large;
-    }
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
+set_xtra_large_size()
 
 st.title("Oracolo")
 

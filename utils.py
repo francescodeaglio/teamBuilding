@@ -1,5 +1,6 @@
 
 from enum import Enum
+import streamlit as st
 
 languages = Enum("languages", ["ITALIAN", "ENGLISH"])
 
@@ -24,8 +25,8 @@ def get_labels_stands():
     labels = [key + " - " + stands[key] for key in stands]
     return labels
 
-def get_descrizione_individui():
-    descrizione = {
+def get_stands_description_singles():
+    descriptions = {
         "A": "Twister: si gioca a gruppi di 4 persone. Il primo che cade perde e rimane li. Gli altri 3 ricevono il bigliettino. A questo punto il gioco ricomincia con 3 nuovi partecipanti + il perdente della manche precedente. ",
         "B": "Equazione: breve equazione (4 addendi) da risolvere. Lo stand da il bigliettino e l’animato riceve il foglietto se da la risposta corretta (con una certa tolleranza)",
         "C": "Riconosci le spezie dal profumo: comprare 5/6 spezie(o altra roba distinguibile dall’odore tipo caffè o Seba) diverse e produrre altrettanti vasetti con le spezie mischiate. I partecipanti ricevono un vasetto e devono indovinare le spezie presenti all’interno solo dal profumo. Grading scale: 3-4-5-6: bigliettino,1-2: nulla,	0: tampone COVID seduta stante",
@@ -49,7 +50,7 @@ Italiano: coniugare un verbo (ex trapassato prossimo di volare)
 """,
         "L": "Bottleflip challenge: as it is. Quando riuscita, viene consegnato il bigliettino.",
     }
-    return descrizione
+    return descriptions
 
 def get_descrizione_quartetti():
     descrizione = {
@@ -68,3 +69,16 @@ Scienze: scala delle potenze di 10, bisogna collocare degli oggetti (atomo, dist
         "L": "Youtuberbanda: prepare un video da un minuto con tot spezzoni da 10 youtubers diverse (cicciogamer, tommo, Me contro Te, Lvis, cosa mangiamo oggi, sio, ). Devono indovinare sufficientemente tanti.",
     }
     return descrizione
+
+
+def set_xtra_large_size():
+    st.markdown(
+        """
+    <style>
+    .streamlit-expanderHeader {
+        font-size: x-large;
+    }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )

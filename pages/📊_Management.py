@@ -1,6 +1,5 @@
 import streamlit as st
 import pymongo
-from functools import reduce
 import plotly.express as px
 import pandas as pd
 from plotly.subplots import make_subplots
