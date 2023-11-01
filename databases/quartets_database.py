@@ -60,6 +60,13 @@ class QuartetsDB(AbstractDatabase):
     def find_all(self) -> list:
         return list(self.db.find({}))
 
+    def find_all_names(self) -> list:
+        quartets = list(self.db.find({}))
+        names = []
+        for quartet in quartets:
+            names.append(quartet["nomi"])
+        return names
+
     def mark_inactive_from_single_id(self, id):
         all_quartets = self.db.find({})
         match = None
@@ -72,6 +79,22 @@ class QuartetsDB(AbstractDatabase):
         self.db.update_one(match, {"$set": {"attivo": False}})
 
         return  match
+
+    def get_suitable_quartets(self, team, names):
+        return list(
+            self.db.find({"squadra": team, "available": True, "nomi": {"$ne": names}})
+        )
+
+    def register_peer(self, players, others):
+        self.db.update_one(
+            players,
+            {"$set": {"altri": others}}
+        )
+        self.db.update_one(
+            players,
+            {"$set": {"available": False}}
+        )
+
 
 
 def check_precoupling(members):

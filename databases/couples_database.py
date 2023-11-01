@@ -42,3 +42,21 @@ class CouplesDB(AbstractDatabase):
     def search_name(self, name):
         query_string = {"nomi": name}
         return  list(self.db.find(query_string))
+
+    def get_awaiting_suitable_couples(self, team):
+        return list(
+            self.db.find({"squadra":team, "awaiting": True, "attivo": True, "available": True}))
+
+    def register_precoupling(self, couple):
+        self.db.update_one(
+            couple,
+            {"$set": {"available": False}}
+        )
+
+    def players_active(self, names):
+        r = self.db.find({"nomi": names})[0]
+
+        return r["attivo"]
+
+    def search_couple_names(self, names):
+        return self.db.find({"nomi": names})[0]
