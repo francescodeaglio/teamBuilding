@@ -1,5 +1,5 @@
 streamlit
-pymongo~=4.1.1
+pymongo
 plotly~=5.9.0
 pandas~=1.3.5
 dnspython==2.2.1

@@ -1,13 +1,15 @@
 import streamlit as st
+
+from Databases import SinglesDB, CouplesDB
 from utils import languages
 
 
 class Oracle1to2():
 
-    def __init__(self, database_single, database_couples, language=languages.ITALIAN) -> None:
+    def __init__(self, database_single: SinglesDB, database_couples: CouplesDB, language=languages.ITALIAN) -> None:
 
-        self.single_db = database_single
-        self.couple_db = database_couples
+        self.single_db : SinglesDB= database_single
+        self.couple_db : CouplesDB = database_couples
         self.language = language
 
     def show_page(self) -> None:
@@ -35,41 +37,32 @@ class Oracle1to2():
 
             submitted = st.form_submit_button("Search")
             if submitted:
-                self._search_oracle(c1, c2)
+                self._search_oracle(int(c1), int(c2))
 
-    def _search_oracle(self, code_one: str, code_two: str) -> None:
-        query_string = {"Id": int(code_one)}
-        res = list(self.single_db.find(query_string))
+    def _search_oracle(self, code_one: int, code_two: int) -> None:
+
+        res = self.single_db.search(code_one)
 
         if len(res) == 0:
             st.warning(
                 "The first code does not exist" if self.language == languages.ENGLISH else
                 "Nessun risultato, il primo numero è inesistente")
         else:
-            number = res[0]["coppia"]["Id"]
-            if int(code_two) == int(number):
+            matching_number = res[0]["coppia"]["Id"]
+            if code_two == matching_number:
                 self._successful_match(code_one, code_two)
                 st.success("It's a match!")
             else:
                 st.error("It's not a match :(")
 
-    def _successful_match(self, code_one: str, code_two: str):
+    def _successful_match(self, code_one: int, code_two: int):
 
-        query_string = {"Id": int(code_one)}
-        res = list(self.single_db.find(query_string))
-        self.single_db.update_one(res[0], {"$set": {"attivo": False}})
+        self.single_db.mark_inactive(code_one)
+        self.single_db.mark_inactive(code_two)
 
-        query_string = {"Id": int(code_two)}
-        res2 = list(self.single_db.find(query_string))
-        self.single_db.update_one(res2[0], {"$set": {"attivo": False}})
+        self.couple_db.insert_couple(
+            self.single_db.search(code_one)[0],
+            self.single_db.search(code_two)[0],
+        )
 
-        new_couple = {
-            "nomicognomi": [res[0]["nomecognome"], res2[0]["nomecognome"]],
-            "ids": [res[0]["Id"], res2[0]["Id"]],
-            "attivo": True,
-            "squadra": res2[0]["squadra"],
-            "nomi": f'{res[0]["nomecognome"]} - {res2[0]["nomecognome"]}',
-            "available": True
-        }
 
-        self.couple_db.insert_one(new_couple)

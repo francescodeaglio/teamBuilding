@@ -1,9 +1,7 @@
 import streamlit as st
-import pymongo
 
-from Oracle1to2 import Oracle1to2
-from oracolo2to4 import frontend_oracolo2to4
-from oracolo4to8 import frontend_oracolo4to8
+from Databases.MongoHandler import MongoHandler
+from Oracles import Oracle1to2, Oracle2to4, Oracle4to8
 
 st.markdown(
         """
@@ -17,24 +15,17 @@ st.markdown(
     )
 
 st.title("Oracolo")
-client = pymongo.MongoClient(
-        "mongodb+srv://campoestivo:qVx8khSNIljjfKqw@cluster0.usbb0.mongodb.net/campoestivo?retryWrites=true&w=majority")
-db = client.testOpening
-singoli_db = db["iscritti"]
-coppie_db = db["coppie"]
-quartetti_db = db["quartetti"]
-ottetti_db = db["otteti"]
-gestionale_db = db["gestionale"]
 
-
-oracle1to2 = Oracle1to2(singoli_db, coppie_db)
+mongo_handler = MongoHandler()
+oracle1to2 = Oracle1to2(mongo_handler.singles_db, mongo_handler.couples_db)
+oracle2to4 = Oracle2to4(mongo_handler.couples_db, mongo_handler.quartets_db, mongo_handler.quartets_db)
+oracle4to8 = Oracle4to8(mongo_handler.quartets_db, mongo_handler.octets_db)
 
 with st.expander("Forma coppia"):
     oracle1to2.show_page()
 with st.expander("Forma quartetto"):
-    frontend_oracolo2to4(coppie_db, quartetti_db, gestionale_db)
-
+    oracle2to4.show_page()
 with st.expander("Forma ottetto"):
-    frontend_oracolo4to8(quartetti_db, ottetti_db)
+    oracle4to8.show_page()
 
 
