@@ -22,7 +22,13 @@ else:
             st.rerun()
 
     with st.expander("Prima fase: da singoli a coppie"):
-        StandSingles(stand, mongo_handler.singles_db).show_page()
+        StandSingles(stand,
+                     mongo_handler.singles_db
+                     ).show_page()
 
     with st.expander("Terza fase: da quartetti a ottetti"):
-        StandQuartets(stand, mongo_handler.singles_db, mongo_handler.couples_db, mongo_handler.quartets_db).show_page()
+        StandQuartets(stand,
+                      mongo_handler.singles_db,
+                      mongo_handler.couples_db,
+                      mongo_handler.quartets_db
+                      ).show_page()

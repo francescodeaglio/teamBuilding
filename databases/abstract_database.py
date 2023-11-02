@@ -11,3 +11,17 @@ class AbstractDatabase():
     def search(self, code: int) -> list:
         query_string = {"Id": code}
         return list(self.db.find(query_string))
+
+    def find_one(self, query):
+        return self.db.find_one(query)
+
+    def find(self, query):
+        return self.db.find(query)
+
+    def find_all(self) -> list:
+        return list(self.db.find({}))
+
+    def get_active_players(self):
+        return list(self.db.find({"attivo": True},
+                                     {"stand_visitati": True, "nomecognome": True, "_id": False,
+                                      "squadra": True}))

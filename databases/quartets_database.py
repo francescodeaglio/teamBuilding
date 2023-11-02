@@ -57,9 +57,6 @@ class QuartetsDB(AbstractDatabase):
                     "ids": quartetto["ids"]
                 }
 
-    def find_all(self) -> list:
-        return list(self.db.find({}))
-
     def find_all_names(self) -> list:
         quartets = list(self.db.find({}))
         names = []
