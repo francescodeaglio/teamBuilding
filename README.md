@@ -1,4 +1,4 @@
-**![Team building](media/logo.png)
+![Team building](media/logo.png)
 
 This repo contains the code for the Summer Camp Nava22's team-building game. Most of the text is Italian, but the code is English.
 
